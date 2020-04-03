@@ -2,10 +2,8 @@ package v.e.e.t.a.h.a;
 
 import com.sun.j3d.utils.applet.MainFrame;
 import com.sun.j3d.utils.geometry.*;
-import com.sun.j3d.utils.geometry.Box;
 import com.sun.j3d.utils.image.TextureLoader;
 import com.sun.j3d.utils.universe.SimpleUniverse;
-import javafx.scene.shape.Circle;
 
 import javax.media.j3d.*;
 import javax.swing.*;
@@ -15,19 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Main  extends Applet implements ActionListener /* implements ActionListener */ {
-//    private Button plus = new Button("+");
-//    private Button minus = new Button(" - ");
-//    private BranchGroup cubeRubikGroup;
-//    private final TransformGroup cubeTransformGroup = new TransformGroup();
-//    private final Transform3D cubeTransform3D = new Transform3D();
-    private final Timer timer = new Timer(16, this);
-//    private final Transform3D oribitalMovement
-//    private double angleY = 0;
-//    private double angleX = 0;
-//    private boolean rotateY = true;
-    private int dimension = 3;
-
+public class Main  extends Applet implements ActionListener {
     static class Textures {
         static final Texture earth = loadTexture("earth_texture.jpg");
         static final Texture jupiter = loadTexture("jupiter_texture.jpg");
@@ -41,13 +27,7 @@ public class Main  extends Applet implements ActionListener /* implements Action
             return new TextureLoader(resourcesDir, new Container()).getTexture();
         }
     }
-
-    public static void main(String[] args) {
-        new MainFrame(new Main(), 1920, 1080).run();
-    }
-
-
-    class SphericalSpaceBody {
+    static class SphericalSpaceBody {
         TransformGroup tg;
         float orbitRotVelocity;
         float selfRotVelocity;
@@ -61,6 +41,7 @@ public class Main  extends Applet implements ActionListener /* implements Action
         }
     }
 
+    private final Timer timer = new Timer(16, this);
     SphericalSpaceBody[] spaceBodies = new SphericalSpaceBody[] {
             new SphericalSpaceBody(createSun(0.15), 0, 0.001f, 0),
             new SphericalSpaceBody(
@@ -95,6 +76,9 @@ public class Main  extends Applet implements ActionListener /* implements Action
             )
     };
 
+    public static void main(String[] args) {
+        new MainFrame(new Main(), 1920, 1080).run();
+    }
 
     public Main() {
         setLayout(new BorderLayout());
@@ -103,7 +87,7 @@ public class Main  extends Applet implements ActionListener /* implements Action
 
         var universe = new SimpleUniverse(canvas);
         var rootGroup = new BranchGroup();
-        
+
         for (var spaceBody : spaceBodies) {
             rootGroup.addChild(spaceBody.tg);
 
@@ -223,59 +207,25 @@ public class Main  extends Applet implements ActionListener /* implements Action
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        {
-            for (var spaceBody: spaceBodies) {
-                var transform = getTransform(spaceBody.tg);
-                {
-                    spaceBody.selfRotAngle += spaceBody.selfRotVelocity % 2 * Math.PI;
-                    transform.setRotation(new AxisAngle4f(new Vector3f(0, 1, 0),spaceBody.selfRotAngle));
-                }
-                {
-                    var orbitRot = new Transform3D();
-                    orbitRot.rotY(spaceBody.orbitAngle);
-                    transform.mul(orbitRot, transform);
-                }
-                spaceBody.tg.setTransform(transform);
+        for (var spaceBody: spaceBodies) {
+            var transform = getTransform(spaceBody.tg);
+            {
+                spaceBody.selfRotAngle += spaceBody.selfRotVelocity % 2 * Math.PI;
+                transform.setRotation(new AxisAngle4f(new Vector3f(0, 1, 0),spaceBody.selfRotAngle));
             }
+            {
+                var orbitRot = new Transform3D();
+                orbitRot.rotY(spaceBody.orbitAngle);
+                transform.mul(orbitRot, transform);
+            }
+            spaceBody.tg.setTransform(transform);
         }
-
-//        if (e.getSource() == plus) {
-//            if (dimension > 13) {
-//                return;
-//            }
-//            dimension++;
-//            cubeTransformGroup.removeChild(cubeRubikGroup);
-//            buildCubeRubikScene();
-//        } else if (e.getSource() == minus) {
-//            if (dimension < 4) {
-//                return;
-//            }
-//            dimension--;
-//            cubeTransformGroup.removeChild(cubeRubikGroup);
-//            buildCubeRubikScene();
-//        } else {
-//            if (rotateY) {
-//                cubeTransform3D.rotY(angleY);
-//                angleY += 0.05;
-//                if (angleY >= 25) {
-//                    rotateY = !rotateY;
-//                    angleY = 0;
-//                }
-////            } else {
-//                cubeTransform3D.rotX(angleX);
-//                angleX += 0.05;
-//                if (angleX >= 25) {
-//                    rotateY = !rotateY;
-//                    angleX = 0;
-//                }
-////            }
-//            cubeTransformGroup.setTransform(cubeTransform3D);
-        }
-//    }
+    }
 }
 
 
 // Taken from https://github.com/lemtzas/Java3D-Project-1/blob/master/Project%201/src/objects/Torus.java
+// :D
 class Torus extends Shape3D {
     public Torus(float majorRadius, float minorRadius, int majorSamples, int minorSamples) {
         setGeometry(createGeometry(majorRadius, minorRadius, majorSamples, minorSamples));

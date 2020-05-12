@@ -1,0 +1,46 @@
+// Works with Gradle 5.7 and Java 12
+
+// To run this do:
+// ./gradlew run
+
+// To build a distribution zip:
+// ./gradlew distZip
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+version = '0.0.1'
+group = 'fi.pelam.gradlejavafxhelloworldapp'
+mainClassName = "v.e.e.t.a.h.a.Main"
+
+javafx {
+    version = "11"
+    modules = [ 'javafx.controls', 'javafx.fxml']
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://simulation.tudelft.nl/maven/"
+    }
+    maven {
+        url "https://nexus.talanlabs.com/content/repositories/releases/"
+    }
+    maven {
+        url "https://simulation.tudelft.nl/maven/"
+    }
+}
+
+dependencies {
+    compile 'java3d:j3dcore:1.5.2'
+    compile 'java3d:j3dutils:1.5.2'
+    compile 'javax.vecmath:vecmath:1.5.2'
+    // compile 'java3d:j3d-core:1.3.1'
+    // compile 'java3d:j3d-core-utils:1.3.1'
+}
